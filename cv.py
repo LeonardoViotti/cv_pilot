@@ -55,4 +55,4 @@ bbox, label, conf = cv.detect_common_objects(im)
 output_image = draw_bbox(im, bbox, label, conf)
 plt.imshow(output_image)
 plt.show()
-print('Number of cars in the image is '+ str(label.count('car')))`
+print('Number of cars in the image is '+ str(label.count('car')))
