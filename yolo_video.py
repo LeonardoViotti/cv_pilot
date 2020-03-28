@@ -8,9 +8,13 @@
 
 # SOURCE: 
 # https://www.pyimagesearch.com/2018/11/12/yolo-object-detection-with-opencv/
+# https://github.com/rickynazarrudin/Yolo-Vehicle-Counter/blob/master/yolo_video.py#L27
+
 
 # USAGE
 # python yolo_video.py --input videos/airport.mp4 --output output/airport_output.avi --yolo yolo-coco
+
+# python yolo_video.py --input ../../Dropbox/Work/WB/CV/hotspot_videos/road_h61_s3_a.avi --output output/test42.avi --yolo yolo-coco
 
 # import the necessary packages
 import numpy as np
@@ -33,6 +37,21 @@ ap.add_argument("-c", "--confidence", type=float, default=0.5,
 ap.add_argument("-t", "--threshold", type=float, default=0.3,
 	help="threshold when applyong non-maxima suppression")
 args = vars(ap.parse_args())
+
+
+# classname = []
+# list_of_vehicles = ["bicycle","car","motorbike","bus","truck"]
+# def get_vehicle_count(boxes, class_names):
+# 	total_vehicle_count = 0 # total vechiles present in the image
+# 	dict_vehicle_count = {} # dictionary with count of each distinct vehicles detected
+# 	for i in range(len(boxes)):
+# 		class_name = class_names[i]
+# 		# print(i,".",class_name)
+# 		if(class_name in list_of_vehicles):
+# 			total_vehicle_count += 1
+# 			dict_vehicle_count[class_name] = dict_vehicle_count.get(class_name,0) + 1
+# 	return total_vehicle_count, dict_vehicle_count
+
 
 # load the COCO class labels our YOLO model was trained on
 labelsPath = os.path.sep.join([args["yolo"], "coco.names"])
@@ -158,6 +177,11 @@ while True:
 				cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
 
 	# check if the video writer is None
+ 
+ 
+ 	# total_vehicles, each_vehicle = get_vehicle_count(boxes, classname)
+	# print("Total vehicles in image", total_vehicles)
+	# print("Each vehicles count in image", each_vehicle)
 	if writer is None:
 		# initialize our video writer
 		fourcc = cv2.VideoWriter_fourcc(*"MJPG")
