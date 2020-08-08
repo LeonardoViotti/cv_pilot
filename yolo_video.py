@@ -14,7 +14,7 @@
 # USAGE
 # python yolo_video.py --input videos/airport.mp4 --output output/airport_output.avi --yolo yolo-coco
 
-# python yolo_video.py --input ../../Dropbox/Work/WB/CV/hotspot_videos/road_h61_s3_a.avi --output output/test42.avi --yolo yolo-coco
+# python yolo_video.py --input hotspot_videos/road_h61_s3_a.avi --output output/test42.avi --yolo yolo-coco
 
 # import the necessary packages
 import numpy as np
