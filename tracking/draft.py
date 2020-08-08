@@ -38,7 +38,7 @@ nms_thres=0.4
 # Load model and weights
 model = Darknet(config_path, img_size=img_size)
 model.load_weights(weights_path)
-model.cuda()
+# model.cuda()
 model.eval()
 classes = utils.load_classes(class_path)
 # Tensor = torch.cuda.FloatTensor # With GPU
@@ -71,7 +71,7 @@ def detect_image(img):
 
 
 # load image and get detections
-img_path = "adis.jpg"
+img_path = "images/adis.jpg"
 prev_time = time.time()
 img = Image.open(img_path)
 detections = detect_image(img)
