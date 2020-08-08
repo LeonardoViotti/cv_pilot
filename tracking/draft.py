@@ -2,6 +2,9 @@
 #  Detection DRAFT
 #--------------------------------------------------------------------
 
+# https://towardsdatascience.com/object-detection-and-tracking-in-pytorch-b3cf1a696a98
+# https://github.com/cfotache/pytorch_objectdetecttrack
+
 #--------------------------------------------------------------------
 # Settings
 
