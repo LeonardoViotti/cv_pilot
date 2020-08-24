@@ -22,7 +22,9 @@ from torchvision import datasets, transforms
 from torch.autograd import Variable
 
 import matplotlib.pyplot as plt
-import matplotlib.patches as patches
+# import matplotlib.patches as patches
+from matplotlib.patches import Rectangle 
+
 from PIL import Image
 
 #--------------------------------------------------------------------
@@ -74,6 +76,8 @@ def detect_image(img):
 img_path = "images/adis.jpg"
 prev_time = time.time()
 img = Image.open(img_path)
+
+# Run detection algorithm
 detections = detect_image(img)
 inference_time = datetime.timedelta(seconds=time.time() - prev_time)
 print ('Inference Time: %s' % (inference_time))
@@ -83,7 +87,7 @@ cmap = plt.get_cmap('tab20b')
 colors = [cmap(i) for i in np.linspace(0, 1, 20)]
 
 img = np.array(img)
-plt.figure()
+# plt.figure()
 fig, ax = plt.subplots(1, figsize=(12,9))
 ax.imshow(img)
 
@@ -92,6 +96,7 @@ pad_y = max(img.shape[1] - img.shape[0], 0) * (img_size / max(img.shape))
 unpad_h = img_size - pad_y
 unpad_w = img_size - pad_x
 
+# FIND ERROR IN BBOX LOCATION !
 if detections is not None:
     unique_labels = detections[:, -1].cpu().unique()
     n_cls_preds = len(unique_labels)
@@ -103,7 +108,7 @@ if detections is not None:
         y1 = ((y1 - pad_y // 2) / unpad_h) * img.shape[0]
         x1 = ((x1 - pad_x // 2) / unpad_w) * img.shape[1]
         color = bbox_colors[int(np.where(unique_labels == int(cls_pred))[0])]
-        bbox = patches.Rectangle((x1, y1), box_w, box_h, linewidth=2, edgecolor=color, facecolor='none')
+        bbox = Rectangle((x1, y1), box_w, box_h, linewidth=2, edgecolor=color, facecolor='none')
         ax.add_patch(bbox)
         plt.text(x1, y1, s=classes[int(cls_pred)], color='white', verticalalignment='top',
                 bbox={'color': color, 'pad': 0})
