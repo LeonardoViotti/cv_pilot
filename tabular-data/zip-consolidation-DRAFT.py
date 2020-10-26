@@ -10,67 +10,94 @@ import glob
 #------------------------------------------------------------------------------------
 # Globals
 
-DATA = 'C:/Users/wb519128/Dropbox/Work/WB/CV/Ethiopia/data/pilot-results'
-DATA_raw = os.path.join(DATA, "raw")
+DATA = 'C:/Users/wb519128/Dropbox/Work/WB/CV/Ethiopia/data'
+DATA_sample = os.path.join(DATA, "sample")
+DATA_pilot_results = os.path.join(DATA, "pilot-results")
+DATA_raw = os.path.join(DATA_pilot_results, "raw")
  
 #------------------------------------------------------------------------------------
-# Load data
+# Files and data configuratioons
 
 # Set csv schemas
 schema_pet = ['pet', 'date', 'time', 'arrived_first', 'u1_id',
           'u1_mov', 'u1_type', 'u1_conf_speed', 'u1_med_speed', 
           'u2_id', 'u2_mov', 'u2_type', 'u2_conf_speed', 
           'u2_med_speed', 'url']
+schema_users = ['date', 'u_id', 'entry_time', 'exit_time',  'user_type', 'med_speed', 'mov']
+schema_speed = ['hour', 'movement', 'avg_speed']
 
-schema_user = ['date', 'u_id', 'entry_time', 'exit_time',  'user_type', 'med_speed', 'mov']
-
-
-schema_mov_speed = ['hour', 'movement', 'avg_speed']
-
-
-
-# Get all files 
+# Get all zipped file names 
 zip_files = glob.glob(DATA_raw + "/*.zip")
-
-# with ZipFile(zip_files[0]) as myzip:
-
-# List all files inside .zip
-all_files_in_zip = ZipFile(zip_files[0]).namelist()
-
-# Find PET dataset file
-pet_df_name = list(filter(lambda x:'PET Conflict Data - All Movements.csv' in x, all_files_in_zip))[0]
-
-# Load PET dataset into a dataframe
-pet_df = pd.read_csv(ZipFile(zip_files[0]).open(pet_df_name))
 
 # To do:
 #   - Add ID
-#   - Add Schema
-#   - Loop trough all the files
 
 # Speed Data Aggregated by Time - Hourly - All Movements.csv
 # Road Users Data - All Movements.csv
 
 
+#------------------------------------------------------------------------------------
+# Load data and create dataset
 
 # Create empty df instance for each main dataframe
 pet_df = pd.DataFrame(columns = schema_pet)
+pet_df['pilot_id'] = None
 
+speed_df = pd.DataFrame(columns = schema_speed)
+speed_df['pilot_id'] = None
 
+users_df = pd.DataFrame(columns = schema_users)
+users_df['pilot_id'] = None
+
+# Loop over all zip files
 for file in zip_files:
-    # print(file)
     # List all files inside .zip
     all_files_in_zip_i = ZipFile(file).namelist()
     
     # Find PET dataset file
     pet_df_name_i = list(filter(lambda x:'PET Conflict Data - All Movements.csv' in x, all_files_in_zip_i))[0]
+    speed_df_name_i = list(filter(lambda x:'Speed Data Aggregated by Time - Hourly - All Movements.csv' in x, all_files_in_zip_i))[0]
+    users_df_name_i = list(filter(lambda x:'Road Users Data - All Movements.csv' in x, all_files_in_zip_i))[0]
     
     # Read csv into pandas
     pet_df_i = pd.read_csv(ZipFile(file).open(pet_df_name_i), names = schema_pet, header=0)
+    speed_df_i = pd.read_csv(ZipFile(file).open(speed_df_name_i), names = schema_speed, header=0)
+    users_df_i = pd.read_csv(ZipFile(file).open(users_df_name_i), names = schema_users, header=0)
+    
+    # Get pliot id
+    pilot_id_i = file[-7:-4] # Grab last 3 characters before ".zip"
     
     # Add ID!
+    pet_df_i['pilot_id'] = pilot_id_i
+    speed_df_i['pilot_id'] = pilot_id_i
+    users_df_i['pilot_id'] = pilot_id_i
     
     # Append to consolidated df
     pet_df = pet_df.append(pet_df_i)
+    users_df = users_df.append(users_df_i)
+    speed_df = speed_df.append(speed_df_i)
     
-    print(pet_df_name_i)
+    print('Opening: ' + file)
+    print('Pilot number: ' + pilot_id_i)
+
+#------------------------------------------------------------------------------------
+# Add original intersection id
+
+# Load sample data
+pilot_sample = pd.read_csv(os.path.join(DATA_sample , 'pilot-intersections.csv'))
+
+# Keep only ids
+pilot_sample_ids = pilot_sample[['id', 'intersection_num']]\
+    .rename(columns = {'id': 'pilot_id',
+                       'intersection_num': 'id'})
+pilot_sample_ids['pilot_id'] = pilot_sample_ids['pilot_id'].astype(int)
+
+
+# Add id to tables
+pet_df['pilot_id'] = pet_df['pilot_id'].astype(int)
+speed_df['pilot_id'] = speed_df['pilot_id'].astype(int)
+users_df['pilot_id'] = users_df['pilot_id'].astype(int)
+
+pet_df = pet_df.merge(pilot_sample_ids, on = 'pilot_id')
+speed_df = speed_df.merge(pilot_sample_ids, on = 'pilot_id')
+users_df = users_df.merge(pilot_sample_ids, on = 'pilot_id')
