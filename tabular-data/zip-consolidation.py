@@ -2,6 +2,8 @@
 #------------------------------------------------------------------------------------
 # Settings
 
+EXPORT = False
+
 import pandas as pd
 from zipfile import ZipFile
 import os
@@ -101,3 +103,41 @@ users_df['pilot_id'] = users_df['pilot_id'].astype(int)
 pet_df = pet_df.merge(pilot_sample_ids, on = 'pilot_id')
 speed_df = speed_df.merge(pilot_sample_ids, on = 'pilot_id')
 users_df = users_df.merge(pilot_sample_ids, on = 'pilot_id')
+
+#------------------------------------------------------------------------------------
+# Export
+if EXPORT:
+    pet_df.to_csv(os.path.join(DATA_pilot_results, 'pet-conflict-all-juntions.csv'))
+    users_df.to_csv(os.path.join(DATA_pilot_results, 'users-all-juntions.csv'))
+    speed_df.to_csv(os.path.join(DATA_pilot_results, 'movements-speed-all-juntions.csv'))
+
+#------------------------------------------------------------------------------------
+# Create empty dictionary
+
+# Load original column
+def grab_cols(file):
+    return pd.read_csv(file, nrows=0).columns.to_list()
+
+pet_df_cols = grab_cols(ZipFile(file).open(pet_df_name_i))
+speed_df_cols = grab_cols(ZipFile(file).open(speed_df_name_i))
+users_df_cols = grab_cols(ZipFile(file).open(users_df_name_i))
+
+def create_dict(columns_list, label_list):
+    dict_df = pd.DataFrame(list(zip(columns_list, label_list)), 
+               columns =['column', 'label'])
+    dict_df['description'] = None
+    dict_df['comments'] = None
+    return dict_df
+
+pet_dict_df = create_dict(schema_pet, pet_df_cols)
+users_dict_df = create_dict(schema_users, users_df_cols)
+speed_dict_df = create_dict(schema_speed, speed_df_cols)
+
+# Export
+if EXPORT:
+    pet_dict_df.to_csv(os.path.join(DATA_pilot_results, 'pet-conflict-all-juntions-dictionary-TEMPLATE.csv'))
+    users_dict_df.to_csv(os.path.join(DATA_pilot_results, 'users-all-juntions-dictionary-TEMPLATE.csv'))
+    speed_dict_df.to_csv(os.path.join(DATA_pilot_results, 'movements-speed-all-juntions-dictionary-TEMPLATE.csv'))
+
+# Initial descriptions, some may be filled later
+
