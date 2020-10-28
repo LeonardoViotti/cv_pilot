@@ -6,7 +6,7 @@ import os
 
 
 # Functions
-def stable_show(img, t = 5000):
+def stable_show(img, t = 10000):
     cv2.startWindowThread()
     cv2.namedWindow("preview")
     cv2.imshow('preview', img)
@@ -40,7 +40,7 @@ def draw_trajectories(img, trajectory_array):
     # Loop over trajectories array to draw trajectories lines
     for t in range(0, len(trajectory_array)):
         # print(t)
-        trajectory_t = ct_tracked[t]
+        trajectory_t = trajectory_array[t]
         # Loop over each point in each trajectory
         for p in range(1, len(trajectory_t)):
             cv2.line(img, tuple(trajectory_t[p-1]), tuple(trajectory_t[p]), (0, 0, 255), 2)
