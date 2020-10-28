@@ -16,12 +16,18 @@ from sort import *
 
 from detection import *
 
+EXPORT = False
+
+
+video_file_name = '2-sample-simp'
+vidoe_file_extention = "mp4"
+
 FOLDER = 'C:/Users/wb519128/Dropbox/Work/WB/CV/'
-DATA = FOLDER + 'Ethiopia/data/'
+DATA = FOLDER + 'Ethiopia/data/prototype/'
 NET = FOLDER + 'yolo/yolo-coco/'
 
 # Load video
-cap = cv2.VideoCapture(DATA + 'sample.mp4')
+cap = cv2.VideoCapture(DATA + video_file_name + '.' + vidoe_file_extention)
 
 #------------------------------------------------------------------------------
 # Create frame detector instance
@@ -35,6 +41,12 @@ detector = detector(NET)
 cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
 _, img_0 = cap.read()
 # stable_show(img_0)
+
+if EXPORT:
+    # Export initial frame for reference
+    cv2.imwrite(DATA + video_file_name + 'img_0.jpg' , img_0)
+
+
 
 # Detect objects in the first frame
 bboxes_0, centriods, confidence, classes = detector.detect(img_0)
@@ -147,3 +159,9 @@ while True:
 
 # Make sure there are no open graphics devices
 cv2.destroyAllWindows()
+
+
+
+# Plot trajectories
+draw_trajectories(img_0, ct_tracked)
+stable_show(img_0)
