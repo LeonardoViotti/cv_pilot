@@ -21,7 +21,7 @@ DATA = FOLDER + 'Ethiopia/data/'
 NET = FOLDER + 'yolo/yolo-coco/'
 
 # Load video
-cap = cv2.VideoCapture(DATA + '16-sample.mp4')
+cap = cv2.VideoCapture(DATA + 'sample.mp4')
 
 #------------------------------------------------------------------------------
 # Create frame detector instance
@@ -135,7 +135,9 @@ while True:
     
     # draw tracked objects bbox
     for i, new_ct in enumerate(ct_i):
-        drawCentroid(img_i, new_ct[0]) # new_ct has an extra dimention for the concatenation to work
+        drawCentroid(img_i, 
+                     new_ct[0],# new_ct has an extra dimention for the concatenation to work
+                     class_id= classes[i]) 
     
     # Show video
     cv2.imshow("Video", img_i)
