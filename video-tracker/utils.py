@@ -25,3 +25,22 @@ def stable_show_vid(cap):
     # cap.release()
     cv2.destroyAllWindows() 
 
+#------------------------------------------------------------------------------
+# Image annotation functions
+
+def draw_trajectories(img, trajectory_array):
+    """
+    This draws a trakjectorie line on a frame
+    img -  has to be an image converted into numpy.ndarray
+    trajectory_array - a (n,p,2) numpy.ndarray, where n is the number of 
+     tracked objects, p is the number of frames each object was tracked for and 2 are
+     the X and Y coordinates in relation to img.
+    """
+    
+    # Loop over trajectories array to draw trajectories lines
+    for t in range(0, len(trajectory_array)):
+        # print(t)
+        trajectory_t = ct_tracked[t]
+        # Loop over each point in each trajectory
+        for p in range(1, len(trajectory_t)):
+            cv2.line(img, tuple(trajectory_t[p-1]), tuple(trajectory_t[p]), (0, 0, 255), 2)
