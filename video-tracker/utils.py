@@ -4,13 +4,17 @@ import matplotlib.pyplot as plt
 import os
 
 
-
 # Functions
-def stable_show(img, t = 10000):
-    cv2.startWindowThread()
-    cv2.namedWindow("preview")
-    cv2.imshow('preview', img)
-    cv2.waitKey(t)
+def img_show(img, max_t = 10000):
+    # Kill window if Q is pressed
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        v2.destroyAllWindows()
+    
+    # Show image
+    cv2.imshow('Preview',img)
+    
+    # Otherwise kill after max_t, default 10s
+    cv2.waitKey(max_t)
     cv2.destroyAllWindows()
 
 def stable_show_vid(cap):
