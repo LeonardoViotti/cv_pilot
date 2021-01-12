@@ -1,3 +1,7 @@
+# TO DO
+#   - Remover outras classes por hora: manter so carro e pessoa
+#   - Filtrar deteccoes por nivel de confianca?
+
 #------------------------------------------------------------------------------
 # Settings
 
@@ -34,7 +38,7 @@ conf_thres=0.8
 nms_thres=0.4
 
 # Set input file
-videopath = 'data/11-sample.mp4'
+videopath = 'data/sample.mp4'
 
 #------------------------------------------------------------------------------
 # Load model and weights
@@ -169,8 +173,8 @@ pix_detecttion_0 = detectionToPixel(frame0, tracked_objects[0])
 drawBox(frame0, pix_detecttion_0)
 drawPoint(frame0, pix_detecttion_0)
 
-#while(True):
-for ii in range(10):   
+while(True):
+# for ii in range(10):   
     # Video frame
     ret, frame_i = vid.read()
     frame_i = cv2.cvtColor(frame_i, cv2.COLOR_BGR2RGB)
